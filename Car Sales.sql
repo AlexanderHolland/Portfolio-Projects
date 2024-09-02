@@ -2,7 +2,6 @@
 Car Sales Dashboard
 
 Skills Used: SELECT, SUM, AVG, COUNT, WHERE, YEAR, MONTH, DATENAME, DATEPART, GROUP BY, ORDER BY, WITH, JOIN, OVER, CAST.
-
 */
 
 SELECT 
@@ -10,7 +9,7 @@ SELECT
 FROM 
   [Car Sales];
 
--- Selecting the data we are going to be using --
+-- Selecting all columns and rows from the Car Sales table to review the dataset before analysis --
 
 SELECT 
   SUM(Price) AS YTD_Total_Sales 
@@ -19,7 +18,7 @@ FROM
 WHERE 
   YEAR(Date) = '2023';
 
--- Finding year to date total sales --
+-- Calculating the total sales revenue for the year-to-date (YTD) for 2023 by summing up all car prices for that year --
 
 SELECT 
   SUM(Price) AS MTD_Total_Sales 
@@ -35,7 +34,7 @@ ORDER BY
   YEAR(Date), 
   MONTH(Date);
 
--- Finding month to date total sales --
+-- Calculating the total sales revenue for the month-to-date (MTD) for December 2023, to analyze sales performance for the current month --
 
 SELECT 
   YEAR(Date) as Year, 
@@ -52,7 +51,7 @@ ORDER BY
   YEAR(Date), 
   MONTH(Date);
 
-  -- Looking at month over month total sales across 2022 - 2023 --
+-- Analyzing total sales revenue on a month-over-month basis across the years 2022 and 2023 to identify trends and seasonality in sales --
 
 WITH YTD_CTE AS (
   SELECT 
@@ -82,8 +81,7 @@ FROM
   YTD_CTE, 
   PYTD_CTE;
 
--- Finding difference between year to date sales and previous year to date sales --
--- Ran into problem (arithmetic overflow), increased the number of integers allowed before the decimal point to 18 from 10 --
+-- Comparing the year-to-date (YTD) total sales between 2023 and 2022 to determine the absolute difference in sales revenue between the two years --
 
 WITH YTD_CTE AS (
   SELECT 
@@ -114,8 +112,8 @@ SELECT
 FROM 
   YTD_CTE, 
   PYTD_CTE;
-  
--- Finding year over year growth in total sales --
+
+-- Calculating the year-over-year (YoY) growth in total sales by comparing 2023's YTD sales against 2022's YTD sales and expressing the difference as a percentage --
 
 SELECT 
   AVG(Price) AS YTD_AVG_Price 
@@ -124,7 +122,7 @@ FROM
 WHERE 
   YEAR(Date) = '2023';
 
--- Finding year to date average price --
+-- Calculating the year-to-date (YTD) average price of cars sold in 2023 to assess pricing trends over the year --
 
 SELECT 
   AVG(Price) AS MTD_AVG_Price 
@@ -140,7 +138,7 @@ ORDER BY
   YEAR(Date), 
   MONTH(Date);
 
--- Finding month to date average price --
+-- Calculating the month-to-date (MTD) average price of cars sold in December 2023 to analyze the current month's pricing trend --
 
 SELECT 
   YEAR(Date) as Year, 
@@ -157,7 +155,7 @@ ORDER BY
   YEAR(Date), 
   MONTH(Date);
 
-  -- Looking at month over month average price sales across 2022 - 2023 --
+-- Analyzing the average price of cars sold on a month-over-month basis across 2022-2023 to identify pricing trends and fluctuations --
 
 WITH YTD_AVG_CTE AS (
   SELECT 
@@ -181,7 +179,7 @@ FROM
   YTD_AVG_CTE, 
   PYTD_AVG_CTE;
 
--- Finding the difference between year to date average price and previous year to date average price --
+-- Comparing the year-to-date (YTD) average price between 2023 and 2022 to determine the absolute difference in the average sales price of cars between the two years --
 
 WITH YTD_AVG_CTE AS (
   SELECT 
@@ -211,7 +209,7 @@ FROM
   YTD_AVG_CTE, 
   PYTD_AVG_CTE;
 
--- Finding year over year growth for average price
+-- Calculating the year-over-year (YoY) growth in the average sales price of cars by comparing 2023's YTD average price against 2022's and expressing the difference as a percentage --
 
 SELECT 
   COUNT(Car_id) AS YTD_Cars_Sold 
@@ -220,7 +218,7 @@ FROM
 WHERE 
   YEAR(Date) = '2023';
 
--- Finding year to date cars sold --
+-- Counting the total number of cars sold year-to-date (YTD) in 2023 to assess sales volume for the year --
 
 SELECT 
   COUNT(Car_id) AS MTD_Cars_Sold 
@@ -230,7 +228,7 @@ WHERE
   YEAR(Date) = '2023' 
   AND MONTH(Date) = '12';
 
--- Finding month to date cars sold --
+-- Counting the total number of cars sold month-to-date (MTD) in December 2023 to assess sales volume for the current month --
 
 SELECT 
   YEAR(Date) as Year, 
@@ -247,7 +245,7 @@ ORDER BY
   YEAR(Date), 
   MONTH(Date);
 
--- Looking at month over month cars sold across 2022 - 2023 --
+-- Analyzing the number of cars sold on a month-over-month basis across 2022-2023 to identify trends in sales volume --
 
 WITH YTD_Cars_Sold_CTE AS (
   SELECT 
@@ -271,7 +269,7 @@ FROM
   YTD_Cars_Sold_CTE, 
   PYTD_Cars_Sold_CTE;
 
--- Finding difference between year to date cars sold and previous year to date cars sold --
+-- Comparing the year-to-date (YTD) number of cars sold between 2023 and 2022 to determine the absolute difference in sales volume between the two years --
 
 WITH YTD_Cars_Sold_CTE AS (
   SELECT 
@@ -301,11 +299,11 @@ FROM
   YTD_Cars_Sold_CTE, 
   PYTD_Cars_Sold_CTE;
 
--- Finding year on year growth in cars sold --
+-- Calculating the year-over-year (YoY) growth in the number of cars sold by comparing 2023's YTD sales volume against 2022's and expressing the difference as a percentage --
 
 SELECT 
-  DATEPART(WEEK, Date), 
-  SUM(Price) 
+  DATEPART(WEEK, Date) AS Week_Number, 
+  SUM(Price) AS Total_Sales
 FROM 
   [Car Sales] 
 WHERE 
@@ -315,7 +313,7 @@ GROUP BY
 ORDER BY 
   DATEPART(WEEK, Date);
 
--- Finding year to date sales by week --
+-- Analyzing the total sales revenue on a week-by-week basis for the year 2023 to identify weekly trends in sales performance --
 
 SELECT 
   Body_Style, 
@@ -328,8 +326,8 @@ GROUP BY
   Body_Style 
 ORDER BY 
   SUM(Price) DESC;
-  
--- Finding year to date total sales by body style --
+
+-- Analyzing total sales revenue by car body style for the year 2023 to determine which body styles contributed the most to overall sales --
 
 SELECT 
   Color, 
@@ -343,7 +341,7 @@ GROUP BY
 ORDER BY 
   SUM(Price) DESC;
 
--- Finding year to date total sales by color --
+-- Analyzing total sales revenue by car color for the year 2023 to determine which colors were most popular among buyers --
 
 WITH a AS (
   SELECT 
@@ -403,7 +401,7 @@ SELECT
   a.YTD_AVG_Price, 
   b.Cars_Sold, 
   c.YTD_Total_Sales, 
-  d.PCT_Total_Sales 
+  CAST(d.PCT_Total_Sales AS DECIMAL (10,2)) AS PCT_Total_Sales
 FROM 
   a 
   JOIN b ON a.Company = b.Company 
@@ -412,15 +410,14 @@ FROM
 ORDER BY 
   a.Company;
 
-
--- Finding catergory wise sales trend --
+-- Analyzing category-wise (company-wise) sales trends by combining average price, total number of cars sold, total sales revenue, and percentage of total sales for each company using Common Table Expressions (CTEs) --
 
 SELECT 
     Company, 
     AVG(Price) AS YTD_AVG_Price, 
     COUNT(Car_id) AS Cars_Sold, 
     SUM(Price) AS YTD_Total_Sales, 
-    CAST(SUM(Price) AS DECIMAL(10,2)) * 100.0 / SUM(SUM(Price)) OVER () AS PCT_Total_Sales
+    CAST(CAST(SUM(Price) AS DECIMAL(10,2)) * 100.0 / SUM(SUM(Price)) OVER () AS DECIMAL(10,2)) AS PCT_Total_Sales
 FROM 
     [Car Sales]
 WHERE 
@@ -430,32 +427,4 @@ GROUP BY
 ORDER BY 
     Company;
 
--- Used chatgpt to find a more efficent way to recieve the same result--
--- The PCT_Total_Sales calculation uses a window function (SUM(SUM(Price)) OVER ()) to calculate the total sales across all companies within the year 2023. This avoids the need for a separate CTE or subquery
-
-SELECT 
-  Company, 
-  AVG(Price) AS YTD_AVG_Price, 
-  COUNT(Car_id) AS Cars_Sold, 
-  SUM(Price) AS YTD_Total_Sales, 
-  CAST(
-    SUM(Price) AS DECIMAL(10, 2)
-  ) * 100.0 / SUM(
-    SUM(Price)
-  ) OVER () AS PCT_Total_Sales 
-FROM 
-  [Car Sales] 
-WHERE 
-  YEAR(Date) = 2023 
-GROUP BY 
-  Company 
-ORDER BY 
-  Company;
-
-
-
-
-
-
-
-
+-- Rewriting the previous query using a more efficient approach by leveraging a window function to calculate the percentage of total sales across all companies within the year 2023, eliminating the need for separate CTEs or subqueries --
